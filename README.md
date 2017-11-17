@@ -1,2 +1,2 @@
 # kanban
-Pure JavaScript KanBan plugin
+Pure JavaScript KanBan
