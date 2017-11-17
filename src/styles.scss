@@ -19,6 +19,8 @@ body *, body *:after, body, *:before{
    margin:0px;
    background:none;
    border:none;
+	user-select:none;
+	
 }
 script, style{ display:none; }
 
