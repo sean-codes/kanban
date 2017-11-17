@@ -6,10 +6,7 @@
   "directories": {
     "example": "example"
   },
-  "scripts": {
-    "build": "babel src -d dist",
-    "uglify": ""
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sean-codes/kanban.git"
@@ -29,7 +26,6 @@
   },
   "homepage": "https://github.com/sean-codes/kanban#readme",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "gulp": "^3.9.1",

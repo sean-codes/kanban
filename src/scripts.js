@@ -24,7 +24,7 @@ class Kanban {
       this.addListeners()
    }
 
-   addListeners() { 
+   addListeners() {
       window.addEventListener('mouseup', (e) => {
          this.cardUp()
       })
