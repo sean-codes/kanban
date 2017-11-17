@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+   <head>
+      <link rel="stylesheet" href="../dist/styles.css">
+   </head>
+   <body>
+      <div id="myKanBan"></div>
+
+      <script src="../dist/scripts.js.min"></script>
+      <script>
+         document.body.onload = function() {
+            // User Code
+            var kanban = new Kanban({
+               selector: '#myKanBan',
+               lanes: [
+                  { title: 'Lane 1', name: 'lane1' },
+                  { title: 'Lane 2', name: 'lane2' },
+                  { title: 'Lane 3', name: 'lane3' },
+                  { title: 'Lane 4', name: 'lane4' },
+                  { title: 'Lane 5', name: 'lane5' }
+               ],
+               title: (title) => { return title },
+               content: (content) => {
+                  return `
+                     <mycard-container>
+                        <mycard-content>
+                           <mycard-title>${content.title}</mycard-title>
+                           <mycard-text class="bg-${content.status}">
+                              ${content.text}
+                           </mycard-text>
+                        <mycard-content>
+                     </mycard-container>
+                  `
+               },
+               cards: randomCards(10)
+            })
+
+            // Functions for generating random cards
+            function randomCards(count){
+               var cards = []
+               for(var i = 0; i < count; i++){
+                  cards.push(randomCard())
+               }
+               return cards
+            }
+            function randomCard(){
+               var lanes = ['lane1', 'lane2', 'lane3', 'lane4', 'lane5']
+               var titles = ['A task', 'New task', 'Yesterday', 'The title']
+               var texts = ['Some test content', 'Different test content', 'This is a test']
+               var status = ['green', 'blue', 'orange', 'red']
+               return {
+                  lane: choose(lanes),
+                  content: {
+                     title: choose(titles),
+                     text: choose(texts),
+                     status: choose(status)
+                  }
+               }
+            }
+
+            function choose(arr){
+               return arr[Math.floor(Math.random()*arr.length)]
+            }
+         }
+      </script>
+   </body>
+</html>
