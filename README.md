@@ -37,11 +37,11 @@ An array of lanes. A lane has title and id. The title value is passed to the tit
 
 An array of cards. A card requires a lane and content. The content value is passed to the content callback
 
-#### `title [function`
+#### `title [function(title)]`
 
 Called when creating a lane. return the html to be placed within lane title
 
-#### `content [function]`
+#### `content [function(content)]`
 
 Called when creating a card. return the html to be placed within a cards content
 
