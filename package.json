@@ -1,0 +1,25 @@
+{
+  "name": "kanban",
+  "version": "1.0.0",
+  "description": "the javascript kanban frontend",
+  "main": "scripts.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sean-codes/kanban.git"
+  },
+  "keywords": [
+    "kanban"
+  ],
+  "author": "sean codes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sean-codes/kanban/issues"
+  },
+  "homepage": "https://github.com/sean-codes/kanban#readme"
+}
