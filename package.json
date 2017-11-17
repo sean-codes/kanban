@@ -7,7 +7,8 @@
     "example": "example"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src -d dist",
+    "uglify": ""
   },
   "repository": {
     "type": "git",
@@ -16,10 +17,26 @@
   "keywords": [
     "kanban"
   ],
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
   "author": "sean codes",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sean-codes/kanban/issues"
   },
-  "homepage": "https://github.com/sean-codes/kanban#readme"
+  "homepage": "https://github.com/sean-codes/kanban#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-watch": "^4.3.11"
+  }
 }
