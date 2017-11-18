@@ -21,18 +21,14 @@ Try out the [demo](https://sean-codes.github.io/kanban/example/demo.html)
 
 The options are detailed below.
 
-#### `lanes [array]`
+#### Class KanbanBoard(selector)
+Creates and appends a board
 
-An array of lanes. A lane has title and id. The title value is passed to the title callback
+#### Class `KanbanLane(laneID, laneContent, [laneTemplate])`
+A lane
 
-#### `cards [array]`
+#### Class `KanbanCard(cardID, laneID, content, [cardTemplate])`
+A card
 
-An array of cards. A card requires a lane and content. The content value is passed to the content callback
-
-#### `title [function(title)]`
-
-Called when creating a lane. return the html to be placed within lane title
-
-#### `content [function(content)]`
-
-Called when creating a card. return the html to be placed within a cards content
+### Templates
+A lane and card can both use templates for their content. A template is a callback function that returns the html for a title/template. This is for adding buttons/designs.
