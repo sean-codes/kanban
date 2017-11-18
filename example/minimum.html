@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+   <head>
+      <link rel="stylesheet" href="./../dist/styles.css">
+   </head>
+   <body>
+      <style>
+         #myKanBan{ height: 100% }
+         kanban lane-title{
+            color:#FFF;
+            background:#222;
+         }
+         kanban card, kanban ghost {
+            background:#465;
+            padding:20px;
+         }
+      </style>
+      <div id="myKanBan"></div>
+
+      <script src="./../dist/scripts.js"></script>
+      <script>
+
+         // Templates
+         var cardTemplate = (content) => { return content }
+         var laneTemplate = (content) => { return content }
+
+         // Create the board
+         var mykanban = new KanbanBoard('#myKanBan')
+
+         // Add Lanes
+         mykanban.addLane(new KanbanLane('lane1', 'Lane 1', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane2', 'Lane 2', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane3', 'Lane 3', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane4', 'Lane 4', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane5', 'Lane 5', laneTemplate))
+
+         // Add Cards
+         mykanban.addCard(new KanbanCard('card1', 'lane1', 'demo 1', cardTemplate))
+
+      </script>
+   </body>
+</html>
