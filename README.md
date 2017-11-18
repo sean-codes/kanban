@@ -4,9 +4,9 @@
 ## Demo
 ![example](https://sean-codes.github.io/kanban/image.gif)
 
-#### Try out the [demo](https://sean-codes.github.io/kanban/example/demo.html)
+Live Demo: [open](https://sean-codes.github.io/kanban/example/demo.html)
 
-## Setup
+## Quick Start
 ```js
 
    // Create board
@@ -17,21 +17,42 @@
    myKanban.addLane(new KanbanLane('lane2ID', 'Lane 2 Title'))
 
    // Add Cards
-   myKanBan.addCard(new KanbanCard('cardID', 'lane1ID', content))
+   myKanBan.addCard(new KanbanCard('cardID', content), laneID)
 ```
 
 ## Documentation
 
-Read the Docs: [docs](https://sean-codes.github.io/kanban/docs)
+Detailed Docs: [docs](https://sean-codes.github.io/kanban/docs/gen)
 
-#### Class KanbanBoard(selector)
+#### Class [`KanbanBoard`](https://sean-codes.github.io/kanban/docs/gen/KanbanBoard.html)
+
+Arguments: (selector)
 Creates and appends a board
 
-#### Class `KanbanLane(laneID, laneContent, [laneTemplate])`
-A lane
+#### Class [`KanbanLane`](https://sean-codes.github.io/kanban/docs/gen/KanbanLane.html)
+Arguments: (laneID, laneContent, [laneTemplate])
+Creates a lane. Add to board using `KanbanBoard.addLane()``
 
-#### Class `KanbanCard(cardID, laneID, content, [cardTemplate])`
-A card
+#### Class [`KanbanCard`](https://sean-codes.github.io/kanban/docs/gen/KanbanCard.html)
+Arguments: (cardID, content, [cardTemplate])
+Creates a card. Add to board using KanbanBoard.addCard(KanbanCard, laneID)
 
 ### Templates
 A lane and card can both use templates for their content. A template is a callback function that returns the html for a title/template. This is for adding buttons/designs.
+
+```js
+   // Default Template: Only returns the content
+   var laneTemplate = (content) => { return content }
+
+   // Example Card template with a title/container!
+   var cardTemplate = (content) => { return `
+      <mycard-container>
+         <mycard-content>
+            <mycard-title>${content.title}</mycard-title>
+            <mycard-text class="bg-${content.status}">
+               ${content.text}
+            </mycard-text>
+         <mycard-content>
+      </mycard-container>
+   `}
+```

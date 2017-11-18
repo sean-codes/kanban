@@ -19,6 +19,7 @@ class KanbanBoard {
 
    /**
     * Creates the board, appends to the container
+    * @private
     **/
    create() {
       this.html.container = document.querySelector(this.selector)
@@ -29,14 +30,16 @@ class KanbanBoard {
 
    /**
     * Creates the Ghost element that will follow the cursor
+    * @private
     **/
    createGhost() {
-      this.ghost = new KanbanGhost(this.html.board)
+      this.ghost = new KanbanGhostCard(this.html.board)
       this.html.board.appendChild(this.ghost.html)
    }
 
    /**
     * Adds event listeners for global events
+    * @private
     **/
    addListeners() {
       window.addEventListener('mouseup', (e) => { this.mouseUp() })
@@ -107,6 +110,7 @@ class KanbanBoard {
    /**
     * Fires when the mouse enters a lane
     * @param {KanbanLane} lane - the lane the mouse entered
+    * @private
     **/
    mouseEnterLane(lane) {
       if(this.heldCard) {
@@ -117,6 +121,7 @@ class KanbanBoard {
    /**
     * Fires when the mouse enters a card
     * @param {KanbanCard} card - the card the mouse entered
+    * @private
     **/
    mouseEnterCard(card) {
       if(this.heldCard) {
@@ -127,6 +132,7 @@ class KanbanBoard {
    /**
     * Fires when the mouse presses down on a card
     * @param {KanbanCard} card - the card the mouse clicked
+    * @private
     **/
    mouseDownOnCard(card) {
       this.heldCard = card
@@ -136,6 +142,7 @@ class KanbanBoard {
 
    /**
     * Fires when the mouse comes up
+    * @private
     **/
    mouseUp() {
       this.heldCard.drop()
@@ -147,6 +154,7 @@ class KanbanBoard {
     * Fires when the mouse moves
     * @param {number} x - the mouse x pos
     * @param {number} y - the mouse y pos
+    * @private
     **/
    mouseMove(x, y) {
       if(this.heldCard) {

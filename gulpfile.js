@@ -8,7 +8,7 @@ const cleancss = require('gulp-clean-css')
 const concat = require('gulp-concat')
 const jsdoc = require('gulp-jsdoc3')
 
-gulp.task('default', ['js', 'scss', 'minify-js', 'minify-css'])
+gulp.task('default', ['js', 'scss', 'minify-js', 'minify-css', 'doc'])
 gulp.task('watch', function(){
    gulp.watch('src/**/*', ['default'])
 })

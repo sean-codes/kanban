@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Index</title>
+	<title>Documentation Class: KanbanCard</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -65,67 +65,222 @@
 		<div id="main">
 			
 
+	<h1 class="page-title">Class: KanbanCard</h1>
+<section>
+
+<header>
+    
+        <h2>
+        KanbanCard
+        </h2>
+        
+            <div class="class-description"><p>A Kanban Card</p></div>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+<hr>
+<dt>
+    <h4 class="name" id="KanbanCard"><span class="type-signature"></span>new KanbanCard(id, content, template)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Create a new kanban card</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the selector for the container</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">any</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>content to be put in the card</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>template</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the template to use on the card</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
 	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
 	
 
 
 
-
-
-
-
-
-
-
-
-	
 	
 
+	
+
+	
+
+	
+</dl>
 
 
+    
 
+    
 
-    <section class="readme-section">
-        <article><h1>kanban</h1><blockquote>
-<p>Pure JavaScript KanBan:</p>
-</blockquote>
-<h2>Demo</h2><p><img src="https://sean-codes.github.io/kanban/image.gif" alt="example"></p>
-<p>Live Demo: <a href="https://sean-codes.github.io/kanban/example/demo.html">open</a></p>
-<h2>Quick Start</h2><pre class="prettyprint source lang-js"><code>
-   // Create board
-   var myKanban = new KanbanBoard('#kanBanContainer')
+    
 
-   // Add Lanes
-   myKanban.addLane(new KanbanLane('lane1ID', 'Lane 1 Title'))
-   myKanban.addLane(new KanbanLane('lane2ID', 'Lane 2 Title'))
+    
 
-   // Add Cards
-   myKanBan.addCard(new KanbanCard('cardID', content), laneID)</code></pre><h2>Documentation</h2><p>Detailed Docs: <a href="https://sean-codes.github.io/kanban/docs/gen">docs</a></p>
-<h4>Class <a href="https://sean-codes.github.io/kanban/docs/gen/KanbanBoard.html"><code>KanbanBoard</code></a></h4><p>Arguments: (selector)
-Creates and appends a board</p>
-<h4>Class <a href="https://sean-codes.github.io/kanban/docs/gen/KanbanLane.html"><code>KanbanLane</code></a></h4><p>Arguments: (laneID, laneContent, [laneTemplate])
-Creates a lane. Add to board using `KanbanBoard.addLane()``</p>
-<h4>Class <a href="https://sean-codes.github.io/kanban/docs/gen/KanbanCard.html"><code>KanbanCard</code></a></h4><p>Arguments: (cardID, content, [cardTemplate])
-Creates a card. Add to board using KanbanBoard.addCard(KanbanCard, laneID)</p>
-<h3>Templates</h3><p>A lane and card can both use templates for their content. A template is a callback function that returns the html for a title/template. This is for adding buttons/designs.</p>
-<pre class="prettyprint source lang-js"><code>   // Default Template: Only returns the content
-   var laneTemplate = (content) => { return content }
+    
 
-   // Example Card template with a title/container!
-   var cardTemplate = (content) => { return `
-      &lt;mycard-container>
-         &lt;mycard-content>
-            &lt;mycard-title>${content.title}&lt;/mycard-title>
-            &lt;mycard-text class=&quot;bg-${content.status}&quot;>
-               ${content.text}
-            &lt;/mycard-text>
-         &lt;mycard-content>
-      &lt;/mycard-container>
-   `}</code></pre></article>
-    </section>
+    
 
+    
+</dd>
 
+    
+    </div>
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

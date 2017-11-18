@@ -4,9 +4,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var KanbanGhost = function () {
-   function KanbanGhost(board) {
-      _classCallCheck(this, KanbanGhost);
+/** A Kanban Ghost Card */
+var KanbanGhostCard = function () {
+   /**
+    * Create a new ghost card
+    * @param {KanBanBoard} board - the board to add to
+    **/
+   function KanbanGhostCard(board) {
+      _classCallCheck(this, KanbanGhostCard);
 
       this.board = board;
       this.lane = undefined;
@@ -19,11 +24,23 @@ var KanbanGhost = function () {
       this.create();
    }
 
-   _createClass(KanbanGhost, [{
+   /**
+   * Create a new ghost card html
+   * @private
+   **/
+
+
+   _createClass(KanbanGhostCard, [{
       key: 'create',
       value: function create() {
          this.html = document.createElement('ghost');
       }
+
+      /**
+      * Copy the contents of the grabbed card to the ghost
+      * @param {KanbanCard} card - the card to copy
+      **/
+
    }, {
       key: 'grab',
       value: function grab(card) {
@@ -34,18 +51,35 @@ var KanbanGhost = function () {
          this.offsetY = card.grabOffsetY;
          this.setStyles();
       }
+
+      /**
+      * Show the ghost card
+      **/
+
    }, {
       key: 'show',
       value: function show() {
          this.display = 'block';
          this.setStyles();
       }
+
+      /**
+      * Hide the ghost card
+      **/
+
    }, {
       key: 'hide',
       value: function hide() {
          this.display = 'none';
          this.setStyles();
       }
+
+      /**
+      * Move the ghost card
+      * @param {number} x - x coordinate
+      * @param {number} y - y coordinate
+      **/
+
    }, {
       key: 'move',
       value: function move(x, y) {
@@ -53,6 +87,12 @@ var KanbanGhost = function () {
          this.y = y;
          this.setStyles();
       }
+
+      /**
+      * Sets the styles
+      * @private
+      **/
+
    }, {
       key: 'setStyles',
       value: function setStyles() {
@@ -64,7 +104,7 @@ var KanbanGhost = function () {
       }
    }]);
 
-   return KanbanGhost;
+   return KanbanGhostCard;
 }();
 
 /** A Kanban Board */
@@ -92,6 +132,7 @@ var KanbanBoard = function () {
 
    /**
     * Creates the board, appends to the container
+    * @private
     **/
 
 
@@ -106,17 +147,19 @@ var KanbanBoard = function () {
 
       /**
        * Creates the Ghost element that will follow the cursor
+       * @private
        **/
 
    }, {
       key: 'createGhost',
       value: function createGhost() {
-         this.ghost = new KanbanGhost(this.html.board);
+         this.ghost = new KanbanGhostCard(this.html.board);
          this.html.board.appendChild(this.ghost.html);
       }
 
       /**
        * Adds event listeners for global events
+       * @private
        **/
 
    }, {
@@ -230,6 +273,7 @@ var KanbanBoard = function () {
       /**
        * Fires when the mouse enters a lane
        * @param {KanbanLane} lane - the lane the mouse entered
+       * @private
        **/
 
    }, {
@@ -243,6 +287,7 @@ var KanbanBoard = function () {
       /**
        * Fires when the mouse enters a card
        * @param {KanbanCard} card - the card the mouse entered
+       * @private
        **/
 
    }, {
@@ -256,6 +301,7 @@ var KanbanBoard = function () {
       /**
        * Fires when the mouse presses down on a card
        * @param {KanbanCard} card - the card the mouse clicked
+       * @private
        **/
 
    }, {
@@ -268,6 +314,7 @@ var KanbanBoard = function () {
 
       /**
        * Fires when the mouse comes up
+       * @private
        **/
 
    }, {
@@ -282,6 +329,7 @@ var KanbanBoard = function () {
        * Fires when the mouse moves
        * @param {number} x - the mouse x pos
        * @param {number} y - the mouse y pos
+       * @private
        **/
 
    }, {
@@ -300,7 +348,16 @@ var KanbanBoard = function () {
    return KanbanBoard;
 }();
 
+/** A Kanban Card */
+
+
 var KanbanCard = function () {
+   /**
+    * Create a new kanban card
+    * @param {string} id - the selector for the container
+    * @param {any} content - content to be put in the card
+    * @param {function} template - the template to use on the card
+    **/
    function KanbanCard(id, content, template) {
       _classCallCheck(this, KanbanCard);
 
@@ -314,12 +371,24 @@ var KanbanCard = function () {
       this.listen();
    }
 
+   /**
+    * Creates the html element
+    * @private
+    **/
+
+
    _createClass(KanbanCard, [{
       key: 'create',
       value: function create() {
          this.html = document.createElement('card');
          this.html.innerHTML = this.template(this.content);
       }
+
+      /**
+       * Listens for card events
+       * @private
+       **/
+
    }, {
       key: 'listen',
       value: function listen() {
@@ -332,27 +401,57 @@ var KanbanCard = function () {
             _this4.mousedown(e);
          });
       }
+
+      /**
+       * what to do when grabbed
+       * @private
+       **/
+
    }, {
       key: 'grab',
       value: function grab() {
          this.moved = false;
       }
+
+      /**
+       * what to do when held
+       * @private
+       **/
+
    }, {
       key: 'hold',
       value: function hold() {
          this.moved = true;
          this.html.classList.add('held');
       }
+
+      /**
+       * what to do when dropped
+       * @private
+       **/
+
    }, {
       key: 'drop',
       value: function drop() {
          this.html.classList.remove('held');
       }
+
+      /**
+       * called when mouse enters
+       * @private
+       **/
+
    }, {
       key: 'mouseenter',
       value: function mouseenter() {
          this.onMouseEnter(this);
       }
+
+      /**
+       * called when mouse pressed
+       * @private
+       **/
+
    }, {
       key: 'mousedown',
       value: function mousedown(e) {
@@ -369,7 +468,16 @@ var KanbanCard = function () {
    return KanbanCard;
 }();
 
+/** A Kanban Lane */
+
+
 var KanbanLane = function () {
+   /**
+    * Create a new ghost card
+    * @param {string} id - the id of the lane
+    * @param {string} content - the content to put in the title
+    * @param {function} template - the template function for the title
+    **/
    function KanbanLane(id, content, template) {
       _classCallCheck(this, KanbanLane);
 
@@ -386,6 +494,12 @@ var KanbanLane = function () {
       this.listen();
    }
 
+   /**
+    * Creates the lane html
+    * @private
+    */
+
+
    _createClass(KanbanLane, [{
       key: 'create',
       value: function create() {
@@ -398,6 +512,12 @@ var KanbanLane = function () {
          this.html.lane.appendChild(this.html.title);
          this.html.lane.appendChild(this.html.cards);
       }
+
+      /**
+       * Listens for events
+       * @private
+       */
+
    }, {
       key: 'listen',
       value: function listen() {
@@ -410,18 +530,33 @@ var KanbanLane = function () {
             _this5.toggle(e);
          });
       }
+
+      /**
+       * What to do when mouse enters
+       * @private
+       */
+
    }, {
       key: 'mouseenter',
       value: function mouseenter(e) {
          this.onMouseEnterLane(this);
       }
+
+      /**
+       * Toggle the lane open or minimized
+       */
+
    }, {
       key: 'toggle',
       value: function toggle() {
          this.html.lane.classList.toggle('collapse');
       }
 
-      // These are a bit spookey I would just leave them alone for now
+      /**
+       * Listens for events
+       * @private
+       * @param {KanbanCard} card - the card to append
+       */
 
    }, {
       key: 'append',
@@ -430,6 +565,14 @@ var KanbanLane = function () {
          if (!card.movedToCardAndLane) this.html.cards.appendChild(card.html);
          card.movedToCardAndLane = false;
       }
+
+      /**
+       * Listens for events
+       * @private
+       * @param {KanbanCard} card1 - the card to append
+       * @param {KanbanCard} card2 - the card to look for a position around
+       */
+
    }, {
       key: 'appendCardAroundCard',
       value: function appendCardAroundCard(card1, card2) {
