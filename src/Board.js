@@ -9,19 +9,18 @@ class KanbanBoard {
       this.html = {}
       this.create()
       this.createGhost()
-
-      // Initialize
-      this.html.container.appendChild(this.html.board)
       this.addListeners()
    }
+
    create() {
       this.html.container = document.querySelector(this.selector)
       this.html.board = this.createBoard()
+      this.html.container.appendChild(this.html.board)
       this.html.cards = []
    }
 
    createGhost() {
-      this.ghost = new KanbanGhost()
+      this.ghost = new KanbanGhost(this.html.board)
       this.html.board.appendChild(this.ghost.html)
    }
 
@@ -57,6 +56,7 @@ class KanbanBoard {
    }
 
    putCardInLane(cardID, laneID){
+      this.ghost.lane = this.findLane(laneID)
       this.findLane(laneID).append(this.findCard(cardID))
    }
 
@@ -69,37 +69,30 @@ class KanbanBoard {
 
    // All the events
    mouseEnterLane(lane) {
-      console.log('board knows: mouse enter lane')
       if(this.heldCard) {
          this.putCardInLane(this.heldCard.id, lane.id)
       }
    }
 
    mouseEnterCard(card) {
-      console.log('board knows: mouse enter card')
       if(this.heldCard) {
-         console.log('Put Card above')
          this.putCardAroundCard(this.heldCard.id, card.id)
       }
-      // move card to the lane
    }
 
    mouseDownOnCard(card, offX, offY) {
-      console.log('board knows: mouse down card')
       this.heldCard = card
       this.heldCard.grab()
       this.ghost.grab(card)
    }
 
    mouseUp() {
-      console.log('board knows: mouse up')
       this.heldCard.drop()
       this.ghost.hide()
       this.heldCard = undefined
    }
 
    mouseMove(x, y) {
-      //console.log('board knows: mouse move')
       if(this.heldCard) {
          if(!this.heldCard.moved) {
             this.heldCard.hold()
@@ -108,7 +101,4 @@ class KanbanBoard {
          this.ghost.move(x, y)
       }
    }
-
-   // This one will get scarey
-   scroll() { }
 }

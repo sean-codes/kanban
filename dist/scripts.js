@@ -17,9 +17,6 @@ var KanbanBoard = function () {
       this.html = {};
       this.create();
       this.createGhost();
-
-      // Initialize
-      this.html.container.appendChild(this.html.board);
       this.addListeners();
    }
 
@@ -28,12 +25,13 @@ var KanbanBoard = function () {
       value: function create() {
          this.html.container = document.querySelector(this.selector);
          this.html.board = this.createBoard();
+         this.html.container.appendChild(this.html.board);
          this.html.cards = [];
       }
    }, {
       key: 'createGhost',
       value: function createGhost() {
-         this.ghost = new KanbanGhost();
+         this.ghost = new KanbanGhost(this.html.board);
          this.html.board.appendChild(this.ghost.html);
       }
    }, {
@@ -98,6 +96,7 @@ var KanbanBoard = function () {
    }, {
       key: 'putCardInLane',
       value: function putCardInLane(cardID, laneID) {
+         this.ghost.lane = this.findLane(laneID);
          this.findLane(laneID).append(this.findCard(cardID));
       }
    }, {
@@ -114,7 +113,6 @@ var KanbanBoard = function () {
    }, {
       key: 'mouseEnterLane',
       value: function mouseEnterLane(lane) {
-         console.log('board knows: mouse enter lane');
          if (this.heldCard) {
             this.putCardInLane(this.heldCard.id, lane.id);
          }
@@ -122,17 +120,13 @@ var KanbanBoard = function () {
    }, {
       key: 'mouseEnterCard',
       value: function mouseEnterCard(card) {
-         console.log('board knows: mouse enter card');
          if (this.heldCard) {
-            console.log('Put Card above');
             this.putCardAroundCard(this.heldCard.id, card.id);
          }
-         // move card to the lane
       }
    }, {
       key: 'mouseDownOnCard',
       value: function mouseDownOnCard(card, offX, offY) {
-         console.log('board knows: mouse down card');
          this.heldCard = card;
          this.heldCard.grab();
          this.ghost.grab(card);
@@ -140,7 +134,6 @@ var KanbanBoard = function () {
    }, {
       key: 'mouseUp',
       value: function mouseUp() {
-         console.log('board knows: mouse up');
          this.heldCard.drop();
          this.ghost.hide();
          this.heldCard = undefined;
@@ -148,7 +141,6 @@ var KanbanBoard = function () {
    }, {
       key: 'mouseMove',
       value: function mouseMove(x, y) {
-         //console.log('board knows: mouse move')
          if (this.heldCard) {
             if (!this.heldCard.moved) {
                this.heldCard.hold();
@@ -157,12 +149,6 @@ var KanbanBoard = function () {
             this.ghost.move(x, y);
          }
       }
-
-      // This one will get scarey
-
-   }, {
-      key: 'scroll',
-      value: function scroll() {}
    }]);
 
    return KanbanBoard;
@@ -227,6 +213,7 @@ var KanbanCard = function () {
          var downArea = e.target.getBoundingClientRect();
          var cardArea = this.html.getBoundingClientRect();
          this.grabWidth = cardArea.width;
+         this.grabHeight = cardArea.height;
          this.grabOffsetX = -e.offsetX - (downArea.left - cardArea.left);
          this.grabOffsetY = -e.offsetY - (downArea.top - cardArea.top);
          this.onMouseDown(this);
@@ -237,9 +224,11 @@ var KanbanCard = function () {
 }();
 
 var KanbanGhost = function () {
-   function KanbanGhost() {
+   function KanbanGhost(board) {
       _classCallCheck(this, KanbanGhost);
 
+      this.board = board;
+      this.lane = undefined;
       this.x = 0;
       this.y = 0;
       this.width = 0;
@@ -259,6 +248,7 @@ var KanbanGhost = function () {
       value: function grab(card) {
          this.html.innerHTML = card.html.innerHTML;
          this.width = card.grabWidth;
+         this.height = card.grabHeight;
          this.offsetX = card.grabOffsetX;
          this.offsetY = card.grabOffsetY;
          this.setStyles();
@@ -281,34 +271,6 @@ var KanbanGhost = function () {
          this.x = x;
          this.y = y;
          this.setStyles();
-         /*
-         var ghostLeft = x + this.offsetX
-         var ghostRight = x + this.offsetX + this.width
-         var ghostTop = y + this.offsetY
-         var ghostBottom = y + this.offsetY + this.height
-          if(!this.html.style.display == 'none'){
-            this.held.classList.add('held')
-            this.html.ghost.innerHTML = this.held.innerHTML
-             this.html.ghost.style.display = 'block'
-         }
-          // Auto scrolling lanes
-         var lane = this.held.parentElement
-         var laneRect = lane.getBoundingClientRect()
-         if(ghostY + ghostHeight > laneRect.top + laneRect.height){
-            lane.scrollTop += (ghostY + ghostHeight) - (laneRect.top + laneRect.height)
-         }
-          if(ghostY < laneRect.top){
-            lane.scrollTop -= laneRect.top - ghostY
-         }
-          // Auto scrolling board
-         var boardRect = this.html.board.getBoundingClientRect()
-         if(ghostX < boardRect.left){
-            this.html.board.scrollLeft -= boardRect.left - ghostX
-         }
-          if(ghostX + ghostWidth > boardRect.left + boardRect.width){
-            this.html.board.scrollLeft += (ghostX + ghostWidth) - (boardRect.left + boardRect.width)
-         }
-         */
       }
    }, {
       key: 'setStyles',

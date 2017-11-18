@@ -41,6 +41,7 @@ class KanbanCard {
       var downArea = e.target.getBoundingClientRect()
       var cardArea = this.html.getBoundingClientRect()
       this.grabWidth = cardArea.width
+      this.grabHeight = cardArea.height
       this.grabOffsetX = -e.offsetX - (downArea.left - cardArea.left)
       this.grabOffsetY = -e.offsetY - (downArea.top - cardArea.top)
       this.onMouseDown(this)
