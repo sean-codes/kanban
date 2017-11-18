@@ -36,5 +36,8 @@
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^3.0.0",
     "gulp-watch": "^4.3.11"
+  },
+  "dependencies": {
+    "gulp-concat": "^2.6.1"
   }
 }

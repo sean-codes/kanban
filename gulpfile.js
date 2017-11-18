@@ -5,6 +5,7 @@ const autoprefixer = require('gulp-autoprefixer')
 const uglify = require('gulp-uglify')
 const rename = require('gulp-rename')
 const cleancss = require('gulp-clean-css')
+const concat = require('gulp-concat')
 
 gulp.task('default', ['js', 'scss', 'minify-js', 'minify-css'])
 gulp.task('watch', function(){
@@ -26,8 +27,11 @@ gulp.task('minify-js', function(){
 })
 
 gulp.task('js', function(){
+   console.log('Babeling...')
    gulp.src('src/*.js')
+      .pipe(concat('scripts.js'))
       .pipe(babel({ presets: ['env'] }))
+      .on('error', (error) => { console.log('JavaScript Error: ', error.loc); this.emit('end') })
       .pipe(gulp.dest('dist'))
 });
 
