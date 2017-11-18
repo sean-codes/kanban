@@ -8,14 +8,9 @@ const cleancss = require('gulp-clean-css')
 const concat = require('gulp-concat')
 const jsdoc = require('gulp-jsdoc3')
 
-gulp.task('default', ['js', 'scss', 'minify-js', 'minify-css', 'doc'])
+gulp.task('default', ['js', 'scss', 'minify-js', 'minify-css'])
 gulp.task('watch', function(){
    gulp.watch('src/**/*', ['default'])
-})
-
-gulp.task('doc', function() {
-   gulp.src(['README.md', './src/**/*.js'], {read: false})
-     .pipe(jsdoc());
 })
 
 gulp.task('minify-css', function(){

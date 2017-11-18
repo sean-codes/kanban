@@ -22,9 +22,9 @@ Live Demo: [open](https://sean-codes.github.io/kanban/example/demo.html)
 
 ## Documentation
 
-Detailed Docs: [docs](https://sean-codes.github.io/kanban/docs/gen)
+Detailed Docs: [docs](https://sean-codes.github.io/kanban/docs)
 
-#### Class [`KanbanBoard`](https://sean-codes.github.io/kanban/docs/gen/KanbanBoard.html)
+#### Class [`KanbanBoard`](https://sean-codes.github.io/kanban/docs)
 
 Arguments: (selector)
 Creates and appends a board
