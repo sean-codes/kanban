@@ -27,9 +27,9 @@ var Kanban = function () {
 
       // Initialize
       this.html.container.appendChild(this.html.board);
-      this.loadLanes();
-      this.loadCards();
-      this.addListeners();
+      this.createLanes();
+      // this.loadCards()
+      // this.addListeners()
    }
 
    _createClass(Kanban, [{
@@ -107,7 +107,6 @@ var Kanban = function () {
    }, {
       key: 'laneHide',
       value: function laneHide(lane) {
-         console.log(lane);
          lane.classList.toggle('collapse');
       }
    }, {
@@ -131,120 +130,41 @@ var Kanban = function () {
          this.movedToLane = false;
       }
    }, {
-      key: 'cardCreate',
-      value: function cardCreate(card) {
-         var cardEle = document.createElement('card');
-         cardEle.innerHTML = this.content(card.content);
-
-         var that = this;
-
-         cardEle.addEventListener('mouseenter', function (e) {
-            that.cardDragOver(this);
-         });
-
-         cardEle.addEventListener('mousedown', function (e) {
-            // Click Offset
-            var downBox = e.target.getBoundingClientRect();
-            var cardBox = this.getBoundingClientRect();
-            that.mouse = {
-               offsetX: -e.offsetX - (downBox.left - cardBox.left),
-               offsetY: -e.offsetY - (downBox.top - cardBox.top)
-            };
-            that.cardDown(this);
-         });
-
-         return cardEle;
-      }
-   }, {
-      key: 'createLane',
-      value: function createLane(lane) {
-         var laneEle = document.createElement('lane');
-         var titleEle = document.createElement('lane-title');
-         var cardsEle = document.createElement('lane-cards');
-
-         laneEle.setAttribute('name', lane.name);
-         titleEle.innerHTML = this.title(lane.title);
-
-         var that = this;
-         cardsEle.addEventListener('mouseenter', function (e) {
-            that.cardDragOver(this);
-         });
-
-         titleEle.addEventListener('click', function (e) {
-            that.laneHide(this.parentElement);
-         });
-
-         laneEle.appendChild(titleEle);
-         laneEle.appendChild(cardsEle);
-         return laneEle;
-      }
-   }, {
       key: 'createBoard',
       value: function createBoard() {
          return document.createElement('kanban');
       }
    }, {
-      key: 'loadLanes',
-      value: function loadLanes() {
-         var _iteratorNormalCompletion = true;
-         var _didIteratorError = false;
-         var _iteratorError = undefined;
+      key: 'createLanes',
+      value: function createLanes() {
+         var _this2 = this;
 
-         try {
-            for (var _iterator = this.lanes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-               var lane = _step.value;
-
-               this.html.board.appendChild(this.createLane(lane));
-            }
-         } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-         } finally {
-            try {
-               if (!_iteratorNormalCompletion && _iterator.return) {
-                  _iterator.return();
-               }
-            } finally {
-               if (_didIteratorError) {
-                  throw _iteratorError;
-               }
-            }
-         }
+         this.lanes.forEach(function (lane) {
+            return _this2.createLane(lane);
+         });
       }
    }, {
-      key: 'loadCards',
-      value: function loadCards() {
-         var _iteratorNormalCompletion2 = true;
-         var _didIteratorError2 = false;
-         var _iteratorError2 = undefined;
-
-         try {
-            for (var _iterator2 = this.cards[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-               var card = _step2.value;
-
-               this.loadCard(card);
-            }
-         } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
-         } finally {
-            try {
-               if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                  _iterator2.return();
-               }
-            } finally {
-               if (_didIteratorError2) {
-                  throw _iteratorError2;
-               }
-            }
-         }
+      key: 'createLane',
+      value: function createLane(lane) {
+         var kabbanLane = new KanbanLane(this, lane, this.title);
+         kabbanLane.mouseEnterLane = this.dragCardToLane;
+         this.html.board.appendChild(kabbanLane.html.lane);
       }
    }, {
-      key: 'loadCard',
-      value: function loadCard(card) {
-         var newCard = this.cardCreate(card);
-         this.html.cards.push(newCard);
-         this.getLaneCardHolder(card.lane).appendChild(newCard);
+      key: 'createCards',
+      value: function createCards() {
+         var _this3 = this;
+
+         this.cards.forEach(function (card) {
+            return _this3.createCard(card);
+         });
+      }
+   }, {
+      key: 'createCard',
+      value: function createCard(card) {
+         // var newCard = this.cardCreate(card)
+         // this.html.cards.push(newCard)
+         // this.getLaneCardHolder(card.lane).appendChild(newCard)
       }
    }, {
       key: 'getLaneCardHolder',
@@ -252,7 +172,122 @@ var Kanban = function () {
          var selector = 'lane[name=' + name + '] lane-cards';
          return this.html.board.querySelector(selector);
       }
+   }, {
+      key: 'moveCardToLane',
+      value: function moveCardToLane() {
+         console.log('test');
+      }
    }]);
 
    return Kanban;
+}();
+
+var KanbanCard = function () {
+   function KanbanCard(board, content, htmlFunction) {
+      _classCallCheck(this, KanbanCard);
+
+      this.board = board;
+      this.content = content;
+      this.htmlFunction = htmlFunction;
+
+      this.create();
+      this.listen();
+   }
+
+   _createClass(KanbanCard, [{
+      key: 'create',
+      value: function create() {
+         this.html = document.createElement('card');
+         this.hmtl.innerHTML = this.htmlFunction(this.content);
+      }
+   }, {
+      key: 'listen',
+      value: function listen() {
+         var _this4 = this;
+
+         this.html.addEventListener('mouseenter', function () {
+            _this4.mouseenter();
+         });
+
+         this.html.addEventListener('mousedown', function (e) {
+            var downArea = e.target.getBoundingClientRect();
+            var cardArea = _this4.html.getBoundingClientRect();
+
+            _this4.board.mouse.offsetX = -e.offsetX - downArea.left - cardArea.left;
+            _this4.board.mouse.offsetY = -e.offsetY - downArea.top - cardArea.top;
+
+            _this4.mousedown();
+         });
+      }
+   }, {
+      key: 'mouseenter',
+      value: function mouseenter() {
+         console.log('mouse enter');
+      }
+   }, {
+      key: 'mousedown',
+      value: function mousedown() {
+         console.log('mousedown');
+      }
+   }]);
+
+   return KanbanCard;
+}();
+
+var KanbanLane = function () {
+   function KanbanLane(board, lane, titleHTML) {
+      _classCallCheck(this, KanbanLane);
+
+      this.board = board;
+      this.id = lane.id;
+      this.content = lane.content;
+      this.titleHTML = titleHTML;
+      this.html = {
+         lane: undefined,
+         title: undefined,
+         cards: undefined
+      };
+
+      this.create();
+      this.listen();
+   }
+
+   _createClass(KanbanLane, [{
+      key: 'create',
+      value: function create() {
+         this.html.lane = document.createElement('lane');
+         this.html.title = document.createElement('lane-title');
+         this.html.cards = document.createElement('lane-cards');
+
+         this.html.lane.id = this.id;
+         this.html.title.innerHTML = this.titleHTML(this.content);
+         this.html.lane.appendChild(this.html.title);
+         this.html.lane.appendChild(this.html.cards);
+      }
+   }, {
+      key: 'listen',
+      value: function listen() {
+         var _this5 = this;
+
+         this.html.cards.addEventListener('mouseenter', function () {
+            _this5.mouseenter();
+         });
+
+         this.html.title.addEventListener('click', function () {
+            _this5.toggle();
+         });
+      }
+   }, {
+      key: 'mouseenter',
+      value: function mouseenter() {
+         this.board.moveCardToLane(this);
+      }
+   }, {
+      key: 'toggle',
+      value: function toggle() {
+         this.html.lane.classList.toggle('collapse');
+      }
+   }]);
+
+   return KanbanLane;
 }();

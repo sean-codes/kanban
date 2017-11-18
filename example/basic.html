@@ -13,11 +13,11 @@
             var kanban = new Kanban({
                selector: '#myKanBan',
                lanes: [
-                  { title: 'Lane 1', name: 'lane1' },
-                  { title: 'Lane 2', name: 'lane2' },
-                  { title: 'Lane 3', name: 'lane3' },
-                  { title: 'Lane 4', name: 'lane4' },
-                  { title: 'Lane 5', name: 'lane5' }
+                  { id: 'lane1', content: 'Lane 1' },
+                  { id: 'lane2', content: 'Lane 2' },
+                  { id: 'lane3', content: 'Lane 3' },
+                  { id: 'lane4', content: 'Lane 4' },
+                  { id: 'lane5', content: 'Lane 5' }
                ],
                title: (title) => { return title },
                content: (content) => {
