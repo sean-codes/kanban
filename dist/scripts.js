@@ -114,6 +114,7 @@ var KanbanBoard = function () {
    }, {
       key: 'mouseEnterLane',
       value: function mouseEnterLane(lane) {
+         console.log('board knows: mouse enter lane');
          if (this.heldCard) {
             this.putCardInLane(this.heldCard.id, lane.id);
          }
@@ -147,7 +148,7 @@ var KanbanBoard = function () {
    }, {
       key: 'mouseMove',
       value: function mouseMove(x, y) {
-         console.log('board knows: mouse move');
+         //console.log('board knows: mouse move')
          if (this.heldCard) {
             if (!this.heldCard.moved) {
                this.heldCard.hold();
@@ -155,26 +156,6 @@ var KanbanBoard = function () {
             }
             this.ghost.move(x, y);
          }
-      }
-   }, {
-      key: 'cardDragOver',
-      value: function cardDragOver(ele) {
-         // Chrome - Safari: Move to lane hack
-         if (!this.held || ele == this.held) return;
-         if (ele.tagName.toLowerCase() == 'lane-cards') {
-            // Safari calls child first skip this
-            if (!this.movedToCardAndLane) ele.appendChild(this.held);
-            this.movedToLane = true;
-            this.movedToCardAndLane = false;
-            return;
-         }
-
-         // Chrome calls parent first
-         // If that happened OR safari calls child first. Set above
-         this.movedToCardAndLane = ele.parentElement != this.held.parentElement;
-         ele.nextSibling == this.held || this.movedToLane || this.movedToCardAndLane ? ele.parentElement.insertBefore(this.held, ele) : ele.parentElement.insertBefore(this.held, ele.nextSibling);
-
-         this.movedToLane = false;
       }
 
       // This one will get scarey
@@ -377,16 +358,16 @@ var KanbanLane = function () {
       value: function listen() {
          var _this5 = this;
 
-         this.html.cards.addEventListener('mouseenter', function () {
-            _this5.mouseenter();
+         this.html.cards.addEventListener('mouseenter', function (e) {
+            _this5.mouseenter(e);
          });
-         this.html.title.addEventListener('click', function () {
-            _this5.toggle();
+         this.html.title.addEventListener('click', function (e) {
+            _this5.toggle(e);
          });
       }
    }, {
       key: 'mouseenter',
-      value: function mouseenter() {
+      value: function mouseenter(e) {
          this.onMouseEnterLane(this);
       }
    }, {
@@ -394,17 +375,27 @@ var KanbanLane = function () {
       value: function toggle() {
          this.html.lane.classList.toggle('collapse');
       }
+
+      // These are a bit spookey I would just leave them alone for now
+
    }, {
       key: 'append',
       value: function append(card) {
-         this.html.cards.appendChild(card.html);
          card.lane = this.id;
+         if (!card.movedToCardAndLane) this.html.cards.appendChild(card.html);
+         card.movedToCardAndLane = false;
       }
    }, {
       key: 'appendCardAroundCard',
       value: function appendCardAroundCard(card1, card2) {
-         !card2.html.nextSibling ? this.append(card1) : this.html.cards.insertBefore(card1.html, card2.html);
          card1.lane = this.id;
+         card1.movedToCardAndLane = card1.html.parentElement != card2.html.parentElement;
+         if (!card2.html.nextSibling && !card1.movedToCardAndLane) {
+            this.append(card1);
+            return;
+         }
+
+         this.html.cards.insertBefore(card1.html, card2.html);
       }
    }]);
 

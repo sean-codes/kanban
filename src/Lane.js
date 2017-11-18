@@ -25,11 +25,11 @@ class KanbanLane {
    }
 
    listen() {
-      this.html.cards.addEventListener('mouseenter', () => { this.mouseenter() })
-      this.html.title.addEventListener('click', () => { this.toggle() })
+      this.html.cards.addEventListener('mouseenter', (e) => { this.mouseenter(e) })
+      this.html.title.addEventListener('click', (e) => { this.toggle(e) })
    }
 
-   mouseenter() {
+   mouseenter(e) {
       this.onMouseEnterLane(this)
    }
 
@@ -37,15 +37,21 @@ class KanbanLane {
       this.html.lane.classList.toggle('collapse')
    }
 
+   // These are a bit spookey I would just leave them alone for now
    append(card) {
-      this.html.cards.appendChild(card.html)
       card.lane = this.id
+      if(!card.movedToCardAndLane) this.html.cards.appendChild(card.html)
+      card.movedToCardAndLane = false
    }
 
    appendCardAroundCard(card1, card2){
-      !card2.html.nextSibling
-         ? this.append(card1)
-         : this.html.cards.insertBefore(card1.html, card2.html)
       card1.lane = this.id
+      card1.movedToCardAndLane = card1.html.parentElement != card2.html.parentElement
+      if(!card2.html.nextSibling && !card1.movedToCardAndLane){
+         this.append(card1)
+         return
+      }
+
+      this.html.cards.insertBefore(card1.html, card2.html)
    }
 }

@@ -69,6 +69,7 @@ class KanbanBoard {
 
    // All the events
    mouseEnterLane(lane) {
+      console.log('board knows: mouse enter lane')
       if(this.heldCard) {
          this.putCardInLane(this.heldCard.id, lane.id)
       }
@@ -98,7 +99,7 @@ class KanbanBoard {
    }
 
    mouseMove(x, y) {
-      console.log('board knows: mouse move')
+      //console.log('board knows: mouse move')
       if(this.heldCard) {
          if(!this.heldCard.moved) {
             this.heldCard.hold()
@@ -106,28 +107,6 @@ class KanbanBoard {
          }
          this.ghost.move(x, y)
       }
-   }
-
-   cardDragOver(ele){
-      // Chrome - Safari: Move to lane hack
-      if(!this.held || ele == this.held) return
-      if(ele.tagName.toLowerCase() == 'lane-cards'){
-         // Safari calls child first skip this
-         if(!this.movedToCardAndLane)
-            ele.appendChild(this.held)
-         this.movedToLane = true
-         this.movedToCardAndLane = false
-         return
-      }
-
-      // Chrome calls parent first
-      // If that happened OR safari calls child first. Set above
-      this.movedToCardAndLane = ele.parentElement != this.held.parentElement
-      ele.nextSibling == this.held || this.movedToLane || this.movedToCardAndLane
-         ? ele.parentElement.insertBefore(this.held,  ele)
-         : ele.parentElement.insertBefore(this.held,  ele.nextSibling)
-
-      this.movedToLane = false
    }
 
    // This one will get scarey
