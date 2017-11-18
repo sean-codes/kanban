@@ -48,7 +48,7 @@
                   text: choose(texts),
                   status: choose(status)
                }
-               mykanban.addCard(new KanbanCard('card_'+Math.random()*100000000000000000, choose(lanes), content, cardTemplate))
+               mykanban.addCard(new KanbanCard('card_'+Math.random()*100000000000000000, content, cardTemplate), choose(lanes))
             }
          }
          function choose(arr){

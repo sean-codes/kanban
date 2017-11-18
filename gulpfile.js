@@ -6,10 +6,16 @@ const uglify = require('gulp-uglify')
 const rename = require('gulp-rename')
 const cleancss = require('gulp-clean-css')
 const concat = require('gulp-concat')
+const jsdoc = require('gulp-jsdoc3')
 
 gulp.task('default', ['js', 'scss', 'minify-js', 'minify-css'])
 gulp.task('watch', function(){
    gulp.watch('src/**/*', ['default'])
+})
+
+gulp.task('doc', function() {
+   gulp.src(['README.md', './src/**/*.js'], {read: false})
+     .pipe(jsdoc());
 })
 
 gulp.task('minify-css', function(){
@@ -33,7 +39,7 @@ gulp.task('js', function(){
       .pipe(babel({ presets: ['env'] }))
       .on('error', (error) => {
          console.log('JavaScript Error: ', error.loc);
-         console.log('JavaScript Error: ', error); 
+         console.log('JavaScript Error: ', error);
          this.emit('end') })
       .pipe(gulp.dest('dist'))
 });

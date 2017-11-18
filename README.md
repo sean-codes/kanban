@@ -2,8 +2,9 @@
 > Pure JavaScript KanBan:
 
 ## Demo
-![example](https://github.com/sean-codes/kanban/blob/master/image.gif?raw=true)
-Try out the [demo](https://sean-codes.github.io/kanban/example/demo.html)
+![example](https://sean-codes.github.io/kanban/image.gif)
+
+#### Try out the [demo](https://sean-codes.github.io/kanban/example/demo.html)
 
 ## Setup
 ```js
@@ -19,7 +20,9 @@ Try out the [demo](https://sean-codes.github.io/kanban/example/demo.html)
    myKanBan.addCard(new KanbanCard('cardID', 'lane1ID', content))
 ```
 
-The options are detailed below.
+## Documentation
+
+Read the Docs: [docs](https://sean-codes.github.io/kanban/docs)
 
 #### Class KanbanBoard(selector)
 Creates and appends a board
