@@ -60,15 +60,26 @@ class KanbanBoard {
       this.findLane(laneID).append(this.findCard(cardID))
    }
 
+   putCardAroundCard(cardID1, cardID2){
+      var card1 = this.findCard(cardID1)
+      var card2 = this.findCard(cardID2)
+      if(card1.id == card2.id) return
+      this.findLane(card2.lane).appendCardAroundCard(card1, card2)
+   }
+
    // All the events
    mouseEnterLane(lane) {
-      if(this.heldCard){
+      if(this.heldCard) {
          this.putCardInLane(this.heldCard.id, lane.id)
       }
    }
 
    mouseEnterCard(card) {
       console.log('board knows: mouse enter card')
+      if(this.heldCard) {
+         console.log('Put Card above')
+         this.putCardAroundCard(this.heldCard.id, card.id)
+      }
       // move card to the lane
    }
 

@@ -39,5 +39,13 @@ class KanbanLane {
 
    append(card) {
       this.html.cards.appendChild(card.html)
+      card.lane = this.id
+   }
+
+   appendCardAroundCard(card1, card2){
+      !card2.html.nextSibling
+         ? this.append(card1)
+         : this.html.cards.insertBefore(card1.html, card2.html)
+      card1.lane = this.id
    }
 }

@@ -100,6 +100,14 @@ var KanbanBoard = function () {
       value: function putCardInLane(cardID, laneID) {
          this.findLane(laneID).append(this.findCard(cardID));
       }
+   }, {
+      key: 'putCardAroundCard',
+      value: function putCardAroundCard(cardID1, cardID2) {
+         var card1 = this.findCard(cardID1);
+         var card2 = this.findCard(cardID2);
+         if (card1.id == card2.id) return;
+         this.findLane(card2.lane).appendCardAroundCard(card1, card2);
+      }
 
       // All the events
 
@@ -114,6 +122,10 @@ var KanbanBoard = function () {
       key: 'mouseEnterCard',
       value: function mouseEnterCard(card) {
          console.log('board knows: mouse enter card');
+         if (this.heldCard) {
+            console.log('Put Card above');
+            this.putCardAroundCard(this.heldCard.id, card.id);
+         }
          // move card to the lane
       }
    }, {
@@ -386,6 +398,13 @@ var KanbanLane = function () {
       key: 'append',
       value: function append(card) {
          this.html.cards.appendChild(card.html);
+         card.lane = this.id;
+      }
+   }, {
+      key: 'appendCardAroundCard',
+      value: function appendCardAroundCard(card1, card2) {
+         !card2.html.nextSibling ? this.append(card1) : this.html.cards.insertBefore(card1.html, card2.html);
+         card1.lane = this.id;
       }
    }]);
 
