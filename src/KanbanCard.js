@@ -1,7 +1,7 @@
 class KanbanCard {
-   constructor(id, lane, content, template){
+   constructor(id, content, template){
       this.id = id
-      this.lane = lane
+      this.lane = undefined
       this.content = content
       this.template = template
       this.html = {}
