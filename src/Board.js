@@ -1,97 +1,100 @@
-class Kanban {
-   constructor(options) {
-      this.selector = options.selector
-      this.lanes = options.lanes
-      this.cards = options.cards
-      this.title = options.title
-      this.content = options.content
-      this.held = undefined
-      this.mouse = { offsetX: 0, offsetY: 0 }
-      this.pos = undefined
-      this.posLane = undefined
+class KanbanBoard {
+   constructor(selector) {
+      this.selector = selector
+      this.lanes = []
+      this.cards = []
+      this.heldCard = undefined
+      this.heldCardMoved = false
 
       this.html = {}
-      this.html.container = document.querySelector(this.selector)
-      this.html.board = this.createBoard()
-      this.html.cards = []
-      this.html.ghost = document.createElement('ghost')
-      this.html.board.appendChild(this.html.ghost)
+      this.create()
+      this.createGhost()
 
       // Initialize
       this.html.container.appendChild(this.html.board)
-      this.createLanes()
-      // this.loadCards()
-      // this.addListeners()
+      this.addListeners()
+   }
+   create() {
+      this.html.container = document.querySelector(this.selector)
+      this.html.board = this.createBoard()
+      this.html.cards = []
+   }
+
+   createGhost() {
+      this.ghost = new KanbanGhost()
+      this.html.board.appendChild(this.ghost.html)
    }
 
    addListeners() {
-      window.addEventListener('mouseup', (e) => {
-         this.cardUp()
-      })
-
-      window.addEventListener('mousemove', (e) => {
-         this.cardMove(e.clientX, e.clientY)
-      })
-
-      document.body.addEventListener('blur', (e) => {
-         this.cardUp()
-      })
+      window.addEventListener('mouseup', (e) => { this.mouseUp() })
+      window.addEventListener('mousemove', (e) => { this.mouseMove(e.clientX, e.clientY) })
+      document.body.addEventListener('blur', (e) => { this.cardUp() })
    }
 
-   cardDown(card) {
-      this.held = card
+   createBoard() {
+      return document.createElement('kanban')
    }
 
-   cardUp() {
-      if(this.held){
-         this.html.ghost.style.display = 'none'
-         this.held.classList.remove('held')
-         this.held = undefined
+   addLane(lane) {
+      this.lanes.push(lane)
+      lane.onMouseEnterLane = (lane) => { this.mouseEnterLane(lane) }
+      this.html.board.appendChild(lane.html.lane)
+   }
+
+   addCard(card) {
+      this.cards.push(card)
+      card.onMouseEnter = (card) => { this.mouseEnterCard(card) }
+      card.onMouseDown = (card, offX, offY) => { this.mouseDownOnCard(card, offX, offY) }
+      this.putCardInLane(card.id, card.lane)
+   }
+
+   findLane(laneID) {
+      return this.lanes.find((e) => { return e.id == laneID })
+   }
+
+   findCard(cardID) {
+      return this.cards.find((e) => { return e.id == cardID })
+   }
+
+   putCardInLane(cardID, laneID){
+      this.findLane(laneID).append(this.findCard(cardID))
+   }
+
+   // All the events
+   mouseEnterLane(lane) {
+      if(this.heldCard){
+         this.putCardInLane(this.heldCard.id, lane.id)
       }
    }
 
-   cardMove(x, y) {
-      this.html.ghost.style.transform = `translateX(${x}px) translateY(${y}px)`
-
-      var ghostX = x + this.mouse.offsetX
-      var ghostY = y + this.mouse.offsetY
-      var ghostWidth = this.html.ghost.offsetWidth
-      var ghostHeight = this.html.ghost.offsetHeight
-      if(this.held){
-         if(!this.heldmoved){
-            this.held.classList.add('held')
-            this.html.ghost.innerHTML = this.held.innerHTML
-            this.html.ghost.style.width = this.held.offsetWidth + 'px'
-            this.html.ghost.style.left = this.mouse.offsetX  + 'px'
-            this.html.ghost.style.top = this.mouse.offsetY + 'px'
-            this.html.ghost.style.display = 'block'
-         }
-
-         // Auto scrolling lanes
-         var lane = this.held.parentElement
-         var laneRect = lane.getBoundingClientRect()
-         if(ghostY + ghostHeight > laneRect.top + laneRect.height){
-            lane.scrollTop += (ghostY + ghostHeight) - (laneRect.top + laneRect.height)
-         }
-
-         if(ghostY < laneRect.top){
-            lane.scrollTop -= laneRect.top - ghostY
-         }
-
-         // Auto scrolling board
-         var boardRect = this.html.board.getBoundingClientRect()
-         if(ghostX < boardRect.left){
-            this.html.board.scrollLeft -= boardRect.left - ghostX
-         }
-
-         if(ghostX + ghostWidth > boardRect.left + boardRect.width){
-            this.html.board.scrollLeft += (ghostX + ghostWidth) - (boardRect.left + boardRect.width)
-         }
-      }
+   mouseEnterCard(card) {
+      console.log('board knows: mouse enter card')
+      // move card to the lane
    }
 
-   laneHide(lane) {
-      lane.classList.toggle('collapse')
+   mouseDownOnCard(card, offX, offY) {
+      console.log('board knows: mouse down card')
+      this.heldCard = card
+      this.heldCard.grab()
+      this.ghost.grab(card)
+   }
+
+   mouseUp() {
+      console.log('board knows: mouse up')
+      this.heldCard.drop()
+      this.ghost.hide()
+      this.heldCard = undefined
+   }
+
+   mouseMove(x, y) {
+      console.log('board knows: mouse move')
+      if(this.heldCard) {
+         if(!this.heldCard.moved) {
+            this.heldCard.hold()
+            this.ghost.show()
+         }
+         this.ghost.move(x, y)
+      }
    }
 
    cardDragOver(ele){
@@ -116,36 +119,6 @@ class Kanban {
       this.movedToLane = false
    }
 
-   createBoard() {
-      return document.createElement('kanban')
-   }
-
-   createLanes() {
-      this.lanes.forEach((lane) => this.createLane(lane))
-   }
-
-   createLane(lane) {
-      var kabbanLane = new KanbanLane(this, lane, this.title)
-      kabbanLane.mouseEnterLane = this.dragCardToLane
-      this.html.board.appendChild(kabbanLane.html.lane)
-   }
-
-   createCards() {
-      this.cards.forEach((card) => this.createCard(card))
-   }
-
-   createCard(card) {
-      // var newCard = this.cardCreate(card)
-      // this.html.cards.push(newCard)
-      // this.getLaneCardHolder(card.lane).appendChild(newCard)
-   }
-
-   getLaneCardHolder(name){
-      var selector = `lane[name=${name}] lane-cards`
-      return this.html.board.querySelector(selector)
-   }
-
-   moveCardToLane(){
-      console.log('test')
-   }
+   // This one will get scarey
+   scroll() { }
 }

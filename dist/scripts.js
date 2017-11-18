@@ -4,110 +4,145 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Kanban = function () {
-   function Kanban(options) {
-      _classCallCheck(this, Kanban);
+var KanbanBoard = function () {
+   function KanbanBoard(selector) {
+      _classCallCheck(this, KanbanBoard);
 
-      this.selector = options.selector;
-      this.lanes = options.lanes;
-      this.cards = options.cards;
-      this.title = options.title;
-      this.content = options.content;
-      this.held = undefined;
-      this.mouse = { offsetX: 0, offsetY: 0 };
-      this.pos = undefined;
-      this.posLane = undefined;
+      this.selector = selector;
+      this.lanes = [];
+      this.cards = [];
+      this.heldCard = undefined;
+      this.heldCardMoved = false;
 
       this.html = {};
-      this.html.container = document.querySelector(this.selector);
-      this.html.board = this.createBoard();
-      this.html.cards = [];
-      this.html.ghost = document.createElement('ghost');
-      this.html.board.appendChild(this.html.ghost);
+      this.create();
+      this.createGhost();
 
       // Initialize
       this.html.container.appendChild(this.html.board);
-      this.createLanes();
-      // this.loadCards()
-      // this.addListeners()
+      this.addListeners();
    }
 
-   _createClass(Kanban, [{
+   _createClass(KanbanBoard, [{
+      key: 'create',
+      value: function create() {
+         this.html.container = document.querySelector(this.selector);
+         this.html.board = this.createBoard();
+         this.html.cards = [];
+      }
+   }, {
+      key: 'createGhost',
+      value: function createGhost() {
+         this.ghost = new KanbanGhost();
+         this.html.board.appendChild(this.ghost.html);
+      }
+   }, {
       key: 'addListeners',
       value: function addListeners() {
          var _this = this;
 
          window.addEventListener('mouseup', function (e) {
-            _this.cardUp();
+            _this.mouseUp();
          });
-
          window.addEventListener('mousemove', function (e) {
-            _this.cardMove(e.clientX, e.clientY);
+            _this.mouseMove(e.clientX, e.clientY);
          });
-
          document.body.addEventListener('blur', function (e) {
             _this.cardUp();
          });
       }
    }, {
-      key: 'cardDown',
-      value: function cardDown(card) {
-         this.held = card;
+      key: 'createBoard',
+      value: function createBoard() {
+         return document.createElement('kanban');
       }
    }, {
-      key: 'cardUp',
-      value: function cardUp() {
-         if (this.held) {
-            this.html.ghost.style.display = 'none';
-            this.held.classList.remove('held');
-            this.held = undefined;
+      key: 'addLane',
+      value: function addLane(lane) {
+         var _this2 = this;
+
+         this.lanes.push(lane);
+         lane.onMouseEnterLane = function (lane) {
+            _this2.mouseEnterLane(lane);
+         };
+         this.html.board.appendChild(lane.html.lane);
+      }
+   }, {
+      key: 'addCard',
+      value: function addCard(card) {
+         var _this3 = this;
+
+         this.cards.push(card);
+         card.onMouseEnter = function (card) {
+            _this3.mouseEnterCard(card);
+         };
+         card.onMouseDown = function (card, offX, offY) {
+            _this3.mouseDownOnCard(card, offX, offY);
+         };
+         this.putCardInLane(card.id, card.lane);
+      }
+   }, {
+      key: 'findLane',
+      value: function findLane(laneID) {
+         return this.lanes.find(function (e) {
+            return e.id == laneID;
+         });
+      }
+   }, {
+      key: 'findCard',
+      value: function findCard(cardID) {
+         return this.cards.find(function (e) {
+            return e.id == cardID;
+         });
+      }
+   }, {
+      key: 'putCardInLane',
+      value: function putCardInLane(cardID, laneID) {
+         this.findLane(laneID).append(this.findCard(cardID));
+      }
+
+      // All the events
+
+   }, {
+      key: 'mouseEnterLane',
+      value: function mouseEnterLane(lane) {
+         if (this.heldCard) {
+            this.putCardInLane(this.heldCard.id, lane.id);
          }
       }
    }, {
-      key: 'cardMove',
-      value: function cardMove(x, y) {
-         this.html.ghost.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
-
-         var ghostX = x + this.mouse.offsetX;
-         var ghostY = y + this.mouse.offsetY;
-         var ghostWidth = this.html.ghost.offsetWidth;
-         var ghostHeight = this.html.ghost.offsetHeight;
-         if (this.held) {
-            if (!this.heldmoved) {
-               this.held.classList.add('held');
-               this.html.ghost.innerHTML = this.held.innerHTML;
-               this.html.ghost.style.width = this.held.offsetWidth + 'px';
-               this.html.ghost.style.left = this.mouse.offsetX + 'px';
-               this.html.ghost.style.top = this.mouse.offsetY + 'px';
-               this.html.ghost.style.display = 'block';
-            }
-
-            // Auto scrolling lanes
-            var lane = this.held.parentElement;
-            var laneRect = lane.getBoundingClientRect();
-            if (ghostY + ghostHeight > laneRect.top + laneRect.height) {
-               lane.scrollTop += ghostY + ghostHeight - (laneRect.top + laneRect.height);
-            }
-
-            if (ghostY < laneRect.top) {
-               lane.scrollTop -= laneRect.top - ghostY;
-            }
-
-            // Auto scrolling board
-            var boardRect = this.html.board.getBoundingClientRect();
-            if (ghostX < boardRect.left) {
-               this.html.board.scrollLeft -= boardRect.left - ghostX;
-            }
-
-            if (ghostX + ghostWidth > boardRect.left + boardRect.width) {
-               this.html.board.scrollLeft += ghostX + ghostWidth - (boardRect.left + boardRect.width);
-            }
-         }
+      key: 'mouseEnterCard',
+      value: function mouseEnterCard(card) {
+         console.log('board knows: mouse enter card');
+         // move card to the lane
       }
    }, {
-      key: 'laneHide',
-      value: function laneHide(lane) {
-         lane.classList.toggle('collapse');
+      key: 'mouseDownOnCard',
+      value: function mouseDownOnCard(card, offX, offY) {
+         console.log('board knows: mouse down card');
+         this.heldCard = card;
+         this.heldCard.grab();
+         this.ghost.grab(card);
+      }
+   }, {
+      key: 'mouseUp',
+      value: function mouseUp() {
+         console.log('board knows: mouse up');
+         this.heldCard.drop();
+         this.ghost.hide();
+         this.heldCard = undefined;
+      }
+   }, {
+      key: 'mouseMove',
+      value: function mouseMove(x, y) {
+         console.log('board knows: mouse move');
+         if (this.heldCard) {
+            if (!this.heldCard.moved) {
+               this.heldCard.hold();
+               this.ghost.show();
+            }
+            this.ghost.move(x, y);
+         }
       }
    }, {
       key: 'cardDragOver',
@@ -129,66 +164,26 @@ var Kanban = function () {
 
          this.movedToLane = false;
       }
-   }, {
-      key: 'createBoard',
-      value: function createBoard() {
-         return document.createElement('kanban');
-      }
-   }, {
-      key: 'createLanes',
-      value: function createLanes() {
-         var _this2 = this;
 
-         this.lanes.forEach(function (lane) {
-            return _this2.createLane(lane);
-         });
-      }
-   }, {
-      key: 'createLane',
-      value: function createLane(lane) {
-         var kabbanLane = new KanbanLane(this, lane, this.title);
-         kabbanLane.mouseEnterLane = this.dragCardToLane;
-         this.html.board.appendChild(kabbanLane.html.lane);
-      }
-   }, {
-      key: 'createCards',
-      value: function createCards() {
-         var _this3 = this;
+      // This one will get scarey
 
-         this.cards.forEach(function (card) {
-            return _this3.createCard(card);
-         });
-      }
    }, {
-      key: 'createCard',
-      value: function createCard(card) {
-         // var newCard = this.cardCreate(card)
-         // this.html.cards.push(newCard)
-         // this.getLaneCardHolder(card.lane).appendChild(newCard)
-      }
-   }, {
-      key: 'getLaneCardHolder',
-      value: function getLaneCardHolder(name) {
-         var selector = 'lane[name=' + name + '] lane-cards';
-         return this.html.board.querySelector(selector);
-      }
-   }, {
-      key: 'moveCardToLane',
-      value: function moveCardToLane() {
-         console.log('test');
-      }
+      key: 'scroll',
+      value: function scroll() {}
    }]);
 
-   return Kanban;
+   return KanbanBoard;
 }();
 
 var KanbanCard = function () {
-   function KanbanCard(board, content, htmlFunction) {
+   function KanbanCard(id, lane, content, template) {
       _classCallCheck(this, KanbanCard);
 
-      this.board = board;
+      this.id = id;
+      this.lane = lane;
       this.content = content;
-      this.htmlFunction = htmlFunction;
+      this.template = template;
+      this.html = {};
 
       this.create();
       this.listen();
@@ -198,50 +193,151 @@ var KanbanCard = function () {
       key: 'create',
       value: function create() {
          this.html = document.createElement('card');
-         this.hmtl.innerHTML = this.htmlFunction(this.content);
+         this.html.innerHTML = this.template(this.content);
       }
    }, {
       key: 'listen',
       value: function listen() {
          var _this4 = this;
 
-         this.html.addEventListener('mouseenter', function () {
-            _this4.mouseenter();
+         this.html.addEventListener('mouseenter', function (e) {
+            _this4.mouseenter(e);
          });
-
          this.html.addEventListener('mousedown', function (e) {
-            var downArea = e.target.getBoundingClientRect();
-            var cardArea = _this4.html.getBoundingClientRect();
-
-            _this4.board.mouse.offsetX = -e.offsetX - downArea.left - cardArea.left;
-            _this4.board.mouse.offsetY = -e.offsetY - downArea.top - cardArea.top;
-
-            _this4.mousedown();
+            _this4.mousedown(e);
          });
+      }
+   }, {
+      key: 'grab',
+      value: function grab() {
+         this.moved = false;
+      }
+   }, {
+      key: 'hold',
+      value: function hold() {
+         this.moved = true;
+         this.html.classList.add('held');
+      }
+   }, {
+      key: 'drop',
+      value: function drop() {
+         this.html.classList.remove('held');
       }
    }, {
       key: 'mouseenter',
       value: function mouseenter() {
-         console.log('mouse enter');
+         this.onMouseEnter(this);
       }
    }, {
       key: 'mousedown',
-      value: function mousedown() {
-         console.log('mousedown');
+      value: function mousedown(e) {
+         var downArea = e.target.getBoundingClientRect();
+         var cardArea = this.html.getBoundingClientRect();
+         this.grabWidth = cardArea.width;
+         this.grabOffsetX = -e.offsetX - (downArea.left - cardArea.left);
+         this.grabOffsetY = -e.offsetY - (downArea.top - cardArea.top);
+         this.onMouseDown(this);
       }
    }]);
 
    return KanbanCard;
 }();
 
+var KanbanGhost = function () {
+   function KanbanGhost() {
+      _classCallCheck(this, KanbanGhost);
+
+      this.x = 0;
+      this.y = 0;
+      this.width = 0;
+      this.offsetX = 0;
+      this.offsetY = 0;
+      this.display = 'none';
+      this.create();
+   }
+
+   _createClass(KanbanGhost, [{
+      key: 'create',
+      value: function create() {
+         this.html = document.createElement('ghost');
+      }
+   }, {
+      key: 'grab',
+      value: function grab(card) {
+         this.html.innerHTML = card.html.innerHTML;
+         this.width = card.grabWidth;
+         this.offsetX = card.grabOffsetX;
+         this.offsetY = card.grabOffsetY;
+         this.setStyles();
+      }
+   }, {
+      key: 'show',
+      value: function show() {
+         this.display = 'block';
+         this.setStyles();
+      }
+   }, {
+      key: 'hide',
+      value: function hide() {
+         this.display = 'none';
+         this.setStyles();
+      }
+   }, {
+      key: 'move',
+      value: function move(x, y) {
+         this.x = x;
+         this.y = y;
+         this.setStyles();
+         /*
+         var ghostLeft = x + this.offsetX
+         var ghostRight = x + this.offsetX + this.width
+         var ghostTop = y + this.offsetY
+         var ghostBottom = y + this.offsetY + this.height
+          if(!this.html.style.display == 'none'){
+            this.held.classList.add('held')
+            this.html.ghost.innerHTML = this.held.innerHTML
+             this.html.ghost.style.display = 'block'
+         }
+          // Auto scrolling lanes
+         var lane = this.held.parentElement
+         var laneRect = lane.getBoundingClientRect()
+         if(ghostY + ghostHeight > laneRect.top + laneRect.height){
+            lane.scrollTop += (ghostY + ghostHeight) - (laneRect.top + laneRect.height)
+         }
+          if(ghostY < laneRect.top){
+            lane.scrollTop -= laneRect.top - ghostY
+         }
+          // Auto scrolling board
+         var boardRect = this.html.board.getBoundingClientRect()
+         if(ghostX < boardRect.left){
+            this.html.board.scrollLeft -= boardRect.left - ghostX
+         }
+          if(ghostX + ghostWidth > boardRect.left + boardRect.width){
+            this.html.board.scrollLeft += (ghostX + ghostWidth) - (boardRect.left + boardRect.width)
+         }
+         */
+      }
+   }, {
+      key: 'setStyles',
+      value: function setStyles() {
+         this.html.style.transform = 'translateX(' + this.x + 'px) translateY(' + this.y + 'px)';
+         this.html.style.width = this.width + 'px';
+         this.html.style.left = this.offsetX + 'px';
+         this.html.style.top = this.offsetY + 'px';
+         this.html.style.display = this.display;
+      }
+   }]);
+
+   return KanbanGhost;
+}();
+
 var KanbanLane = function () {
-   function KanbanLane(board, lane, titleHTML) {
+   function KanbanLane(id, content, template) {
       _classCallCheck(this, KanbanLane);
 
-      this.board = board;
-      this.id = lane.id;
-      this.content = lane.content;
-      this.titleHTML = titleHTML;
+      this.id = id;
+      this.content = content;
+      this.template = template;
       this.html = {
          lane: undefined,
          title: undefined,
@@ -260,7 +356,7 @@ var KanbanLane = function () {
          this.html.cards = document.createElement('lane-cards');
 
          this.html.lane.id = this.id;
-         this.html.title.innerHTML = this.titleHTML(this.content);
+         this.html.title.innerHTML = this.template(this.content);
          this.html.lane.appendChild(this.html.title);
          this.html.lane.appendChild(this.html.cards);
       }
@@ -272,7 +368,6 @@ var KanbanLane = function () {
          this.html.cards.addEventListener('mouseenter', function () {
             _this5.mouseenter();
          });
-
          this.html.title.addEventListener('click', function () {
             _this5.toggle();
          });
@@ -280,12 +375,17 @@ var KanbanLane = function () {
    }, {
       key: 'mouseenter',
       value: function mouseenter() {
-         this.board.moveCardToLane(this);
+         this.onMouseEnterLane(this);
       }
    }, {
       key: 'toggle',
       value: function toggle() {
          this.html.lane.classList.toggle('collapse');
+      }
+   }, {
+      key: 'append',
+      value: function append(card) {
+         this.html.cards.appendChild(card.html);
       }
    }]);
 

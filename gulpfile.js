@@ -31,7 +31,10 @@ gulp.task('js', function(){
    gulp.src('src/*.js')
       .pipe(concat('scripts.js'))
       .pipe(babel({ presets: ['env'] }))
-      .on('error', (error) => { console.log('JavaScript Error: ', error.loc); this.emit('end') })
+      .on('error', (error) => {
+         console.log('JavaScript Error: ', error.loc);
+         console.log('JavaScript Error: ', error); 
+         this.emit('end') })
       .pipe(gulp.dest('dist'))
 });
 

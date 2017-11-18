@@ -8,19 +8,30 @@
 
       <script src="./../dist/scripts.js"></script>
       <script>
+         var laneTemplate = (content) => { return content }
+         var cardTemplate = (content) => { return `<div style='background:#465'>${content}</div>` }
+
+         // Create the board
+         var mykanban = new KanbanBoard('#myKanBan')
+
+         // Add Lanes
+         mykanban.addLane(new KanbanLane('lane1', 'Lane 1', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane2', 'Lane 2', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane3', 'Lane 3', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane4', 'Lane 4', laneTemplate))
+         mykanban.addLane(new KanbanLane('lane5', 'Lane 5', laneTemplate))
+
+         // Add Cards
+         mykanban.addCard(new KanbanCard('card1', 'lane1', 'demo', cardTemplate))
+
+         /*
+
          document.body.onload = function() {
             // User Code
-            var kanban = new Kanban({
+            kanban = new Kanban({
                selector: '#myKanBan',
-               lanes: [
-                  { id: 'lane1', content: 'Lane 1' },
-                  { id: 'lane2', content: 'Lane 2' },
-                  { id: 'lane3', content: 'Lane 3' },
-                  { id: 'lane4', content: 'Lane 4' },
-                  { id: 'lane5', content: 'Lane 5' }
-               ],
-               title: (title) => { return title },
-               content: (content) => {
+               htmlLane: (title) => { return title },
+               htmlCard: (content) => {
                   return `
                      <mycard-container>
                         <mycard-content>
@@ -32,6 +43,13 @@
                      </mycard-container>
                   `
                },
+               lanes: [
+                  { id: 'lane1', content: 'Lane 1' },
+                  { id: 'lane2', content: 'Lane 2' },
+                  { id: 'lane3', content: 'Lane 3' },
+                  { id: 'lane4', content: 'Lane 4' },
+                  { id: 'lane5', content: 'Lane 5' }
+               ],
                cards: randomCards(10)
             })
 
@@ -62,6 +80,7 @@
                return arr[Math.floor(Math.random()*arr.length)]
             }
          }
+         */
       </script>
    </body>
 </html>

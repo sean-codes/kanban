@@ -1,8 +1,10 @@
 class KanbanCard {
-   constructor(board, content, htmlFunction){
-      this.board = board
+   constructor(id, lane, content, template){
+      this.id = id
+      this.lane = lane
       this.content = content
-      this.htmlFunction = htmlFunction
+      this.template = template
+      this.html = {}
 
       this.create()
       this.listen()
@@ -10,30 +12,37 @@ class KanbanCard {
 
    create() {
       this.html = document.createElement('card')
-      this.hmtl.innerHTML = this.htmlFunction(this.content)
+      this.html.innerHTML = this.template(this.content)
    }
 
    listen() {
-      this.html.addEventListener('mouseenter', () => {
-         this.mouseenter()
-      })
+      this.html.addEventListener('mouseenter', (e) => { this.mouseenter(e) })
+      this.html.addEventListener('mousedown', (e) => { this.mousedown(e) })
+   }
 
-      this.html.addEventListener('mousedown', (e) => {
-         var downArea = e.target.getBoundingClientRect()
-         var cardArea = this.html.getBoundingClientRect()
+   grab() {
+      this.moved = false
+   }
 
-         this.board.mouse.offsetX = -e.offsetX - downArea.left - cardArea.left
-         this.board.mouse.offsetY = -e.offsetY - downArea.top - cardArea.top
+   hold() {
+      this.moved = true
+      this.html.classList.add('held')
+   }
 
-         this.mousedown()
-      })
+   drop() {
+      this.html.classList.remove('held')
    }
 
    mouseenter() {
-      console.log('mouse enter')
+      this.onMouseEnter(this)
    }
 
-   mousedown() {
-      console.log('mousedown')
+   mousedown(e) {
+      var downArea = e.target.getBoundingClientRect()
+      var cardArea = this.html.getBoundingClientRect()
+      this.grabWidth = cardArea.width
+      this.grabOffsetX = -e.offsetX - (downArea.left - cardArea.left)
+      this.grabOffsetY = -e.offsetY - (downArea.top - cardArea.top)
+      this.onMouseDown(this)
    }
 }
