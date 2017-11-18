@@ -3,28 +3,20 @@
 
 ## Demo
 ![example](https://github.com/sean-codes/kanban/blob/master/image.gif?raw=true)
-Try out the [demo](https://sean-codes.github.io/kanban/example/basic.html)
+Try out the [demo](https://sean-codes.github.io/kanban/example/demo.html)
 
 ## Setup
 ```js
-var kanban = new Kanban({
-   selector: '#myKanBan',
-   lanes: [
-      { title: 'Lane 1', name: 'lane1' }
-   ],
-   title: (title) => { return title },
-   content: (content) => { return content },
-   cards: [
-       {
-           lane: 'lane1',
-           content: 'Test Card 1'
-       },
-       {
-           lane: 'lane2',
-           content: 'Test Card 2'
-       }
-   ]
-})
+
+   // Create board
+   var myKanban = new KanbanBoard('#kanBanContainer')
+
+   // Add Lanes
+   myKanban.addLane(new KanbanLane('lane1ID', 'Lane 1 Title'))
+   myKanban.addLane(new KanbanLane('lane2ID', 'Lane 2 Title'))
+
+   // Add Cards
+   myKanBan.addCard(new KanbanCard('cardID', 'lane1ID', content))
 ```
 
 The options are detailed below.

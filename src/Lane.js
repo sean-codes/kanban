@@ -44,7 +44,7 @@ class KanbanLane {
       card.movedToCardAndLane = false
    }
 
-   appendCardAroundCard(card1, card2){
+   appendCardAroundCard(card1, card2) {
       card1.lane = this.id
       card1.movedToCardAndLane = card1.html.parentElement != card2.html.parentElement
       if(!card2.html.nextSibling && !card1.movedToCardAndLane){
