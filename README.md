@@ -1,5 +1,5 @@
 # kanban
-> Pure JavaScript KanBan: 
+> Pure JavaScript KanBan:
 
 ## Demo
 ![example](https://github.com/sean-codes/kanban/blob/master/image.gif?raw=true)
@@ -13,8 +13,8 @@ var kanban = new Kanban({
       { title: 'Lane 1', name: 'lane1' }
    ],
    title: (title) => { return title },
-   content: (content) => { content },
-   cards: [ 
+   content: (content) => { return content },
+   cards: [
        {
            lane: 'lane1',
            content: 'Test Card 1'
@@ -29,7 +29,7 @@ var kanban = new Kanban({
 
 The options are detailed below.
 
-#### `lanes [array]` 
+#### `lanes [array]`
 
 An array of lanes. A lane has title and id. The title value is passed to the title callback
 
@@ -44,4 +44,3 @@ Called when creating a lane. return the html to be placed within lane title
 #### `content [function(content)]`
 
 Called when creating a card. return the html to be placed within a cards content
-
