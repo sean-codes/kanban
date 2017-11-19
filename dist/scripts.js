@@ -589,3 +589,4 @@ var KanbanLane = function () {
 
    return KanbanLane;
 }();
+//# sourceMappingURL=scripts.js.map

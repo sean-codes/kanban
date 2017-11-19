@@ -7,6 +7,7 @@ const rename = require('gulp-rename')
 const cleancss = require('gulp-clean-css')
 const concat = require('gulp-concat')
 const jsdoc = require('gulp-jsdoc3')
+const sourcemaps = require('gulp-sourcemaps')
 
 gulp.task('default', ['js', 'scss', 'minify-js', 'minify-css'])
 gulp.task('watch', function(){
@@ -30,8 +31,10 @@ gulp.task('minify-js', function(){
 gulp.task('js', function(){
    console.log('Babeling...')
    gulp.src('src/*.js')
+      .pipe(sourcemaps.init())
       .pipe(concat('scripts.js'))
       .pipe(babel({ presets: ['env'] }))
+      .pipe(sourcemaps.write('./'))
       .on('error', (error) => {
          console.log('JavaScript Error: ', error.loc);
          console.log('JavaScript Error: ', error);
