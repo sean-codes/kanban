@@ -145,7 +145,9 @@ class KanbanBoard {
     * @private
     **/
    mouseUp() {
-      this.heldCard.drop()
+      if(this.heldCard) {
+        this.heldCard.drop()
+      }
       this.ghost.hide()
       this.heldCard = undefined
    }
